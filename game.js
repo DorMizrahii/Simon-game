@@ -8,13 +8,13 @@ var userClickedPattern = [];
 
 //next sequence function
 function nextSequence(){
+    level++;
     $("#level-title").text("Level "+level);
     var randomNumber = Math.floor(Math.random()*4);
     var randomChosenColour = buttonColours[randomNumber];
     gamePattern.push(randomChosenColour);
     $("#"+randomChosenColour).fadeOut(100).fadeIn(100);
     playSound(randomChosenColour);
-    level++;
 }
 
 //play sound function
