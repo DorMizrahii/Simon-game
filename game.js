@@ -1,28 +1,43 @@
 var level = 0, started = false;
-//array of button colours
+// Array of button colours
 var buttonColours = ["red", "blue", "green", "yellow"];
-//array of game pattern
+// Array of game pattern
 var gamePattern = [];
-//array of user clicked pattern
+// Array of user clicked pattern
 var userClickedPattern = [];
+$(".container").hide();
 
-//next sequence function
+// Next sequence function
 function nextSequence(){
     level++;
     $("#level-title").text("Level "+level);
     var randomNumber = Math.floor(Math.random()*4);
     var randomChosenColour = buttonColours[randomNumber];
     gamePattern.push(randomChosenColour);
-    $("#"+randomChosenColour).fadeOut(100).fadeIn(100);
-    playSound(randomChosenColour);
+    showPattern();
 }
 
-//play sound function
+// Renders gamePattern from start to finish each round
+function showPattern(){
+    var i = 0;
+    var interval = setInterval(function(){
+        if(!started) clearInterval(interval); 
+        $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
+        playSound(gamePattern[i]);
+        i++; 
+        if(i == gamePattern.length) clearInterval(interval);
+   }, 500)
+}
+
+// Play sound function
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
+    audio.volume = 0.5; // UPDATE 1.1 - less annoying
+    if(name === "wrong") audio.volume = 0.3;
     audio.play();
 }
-//animate press effect on buttons when pressed by users
+
+// Animate press effect on buttons when pressed by users
 function animatePress(currentColour){
     $("#"+currentColour).addClass("pressed");
     setTimeout(function(){
@@ -30,33 +45,33 @@ function animatePress(currentColour){
     }, 100);
 }
 
-//game over function
+// Game over function
 function gameOver(){
     playSound("wrong");
     $("body").addClass("game-over");
     setTimeout(function(){
         $("body").removeClass("game-over");
-    }, 200);
-    $("#level-title").text("Game Over, Press Any Key to Restart");
-    startOver();
+        $("#level-title").text("Press Any Key to Restart");
+        startOver();
+    }, 2000);
+    $("#level-title").text("Oops! Game Over");
+    $(".container").hide();
 }
 
-//check answer and call for a new round or endgame condition
+// Check answer and call for a new round or endgame condition
 function checkAnswer(currentLevel){
     if(gamePattern[currentLevel] === userClickedPattern[currentLevel]){
-        console.log("success");
         if(userClickedPattern.length === gamePattern.length){
-            setTimeout(function(){
-                nextSequence();
-            }, 1000);
+            nextSequence();
             userClickedPattern = [];
         }
     }
-    else{
-        gameOver();
+    else if(started){ 
+            gameOver();
     }
 }
-//start over function
+
+// Start over function
 function startOver(){
     level = 0;
     gamePattern = [];
@@ -64,20 +79,20 @@ function startOver(){
     started = false;
 }
 
-//click event listener
+// Click event listener
 $(".btn").click(function(){
     var userChosenColour = $(this).attr("id");
     userClickedPattern.push(userChosenColour);
     animatePress(userChosenColour);
     playSound(userChosenColour);
-    checkAnswer(userClickedPattern.length-1);
+    checkAnswer(userClickedPattern.length - 1);
 }
 );
 
-//start the game
+// Start the game
 $(document).keypress(function(){
     if(!started){
-        $("#level-title").text("Level "+level);
+        $(".container").show();
         started = true;
         nextSequence();
     }
