@@ -5,34 +5,49 @@ var buttonColours = ["red", "blue", "green", "yellow"];
 var gamePattern = [];
 // Array of user clicked pattern
 var userClickedPattern = [];
+// Pauses the ability to restart and click buttons
+var isPaused = false;
+// Default => normal difficulty
+var difficultyHard = false;
+// Hides Simon Color Buttons
 $(".container").hide();
+
+// Swaps colors of the grid each round
+function swapColors(){
+    
+}
 
 // Next sequence function
 function nextSequence(){
     level++;
-    $("#level-title").text("Level "+level);
     var randomNumber = Math.floor(Math.random()*4);
     var randomChosenColour = buttonColours[randomNumber];
     gamePattern.push(randomChosenColour);
+    $("#level-title").text("Level " + level);
     showPattern();
 }
 
 // Renders gamePattern from start to finish each round
 function showPattern(){
     var i = 0;
+    isPaused = true;
+    $("body").css("background-color", "#011122");
     var interval = setInterval(function(){
-        if(!started) clearInterval(interval); 
+        if(i == gamePattern.length) {
+            isPaused = false;
+            clearInterval(interval);
+            $("body").css("background-color", "#011F3F");
+        }
         $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
         playSound(gamePattern[i]);
         i++; 
-        if(i == gamePattern.length) clearInterval(interval);
    }, 500)
 }
 
 // Play sound function
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
-    audio.volume = 0.5; // UPDATE 1.1 - less annoying
+    audio.volume = 0.5;
     if(name === "wrong") audio.volume = 0.3;
     audio.play();
 }
@@ -48,14 +63,16 @@ function animatePress(currentColour){
 // Game over function
 function gameOver(){
     playSound("wrong");
-    $("body").addClass("game-over");
-    setTimeout(function(){
-        $("body").removeClass("game-over");
-        $("#level-title").text("Press Any Key to Restart");
-        startOver();
-    }, 2000);
+    $("body").css("background-color", "red");
+    isPaused = true;
+    startOver();
     $("#level-title").text("Oops! Game Over");
     $(".container").hide();
+    setTimeout(function(){
+        $("body").css("background-color", "#011F3F");
+        $("#level-title").text("Press Any Key to Restart");
+        isPaused = false;
+    }, 2000);
 }
 
 // Check answer and call for a new round or endgame condition
@@ -81,17 +98,17 @@ function startOver(){
 
 // Click event listener
 $(".btn").click(function(){
-    var userChosenColour = $(this).attr("id");
-    userClickedPattern.push(userChosenColour);
-    animatePress(userChosenColour);
-    playSound(userChosenColour);
-    checkAnswer(userClickedPattern.length - 1);
-}
-);
+    if(!isPaused){
+       var userChosenColour = $(this).attr("id");
+       userClickedPattern.push(userChosenColour);
+       animatePress(userChosenColour);
+       playSound(userChosenColour);
+       checkAnswer(userClickedPattern.length - 1); 
+}});
 
 // Start the game
 $(document).keypress(function(){
-    if(!started){
+    if(!started && !isPaused){
         $(".container").show();
         started = true;
         nextSequence();

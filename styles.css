@@ -1,6 +1,6 @@
 body {
   text-align: center;
-  background-color: #011F3F;
+  background-color: #011122;
 }
 
 #level-title {
@@ -22,13 +22,8 @@ body {
   display: inline-block;
   height: 200px;
   width: 200px;
-  border: 10px solid black;
-  border-radius: 20%;
-}
-
-.game-over {
-  background-color: red;
-  opacity: 0.8;
+  border: 8px solid black;
+  border-radius: 15%;
 }
 
 .red {
