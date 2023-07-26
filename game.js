@@ -17,6 +17,8 @@ function swapColors(){
     
 }
 
+$(".container").hide();
+
 // Next sequence function
 function nextSequence(){
     level++;
@@ -48,6 +50,25 @@ function showPattern(){
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
     audio.volume = 0.5;
+    showPattern();
+}
+
+// Renders gamePattern from start to finish each round
+function showPattern(){
+    var i = 0;
+    var interval = setInterval(function(){
+        if(!started) clearInterval(interval); 
+        $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
+        playSound(gamePattern[i]);
+        i++; 
+        if(i == gamePattern.length) clearInterval(interval);
+   }, 500)
+}
+
+// Play sound function
+function playSound(name){
+    var audio = new Audio("sounds/"+name+".mp3");
+    audio.volume = 0.5; // UPDATE 1.1 - less annoying
     if(name === "wrong") audio.volume = 0.3;
     audio.play();
 }
@@ -73,6 +94,16 @@ function gameOver(){
         $("#level-title").text("Press Any Key to Restart");
         isPaused = false;
     }, 2000);
+
+  $("body").addClass("game-over");
+    setTimeout(function(){
+        $("body").removeClass("game-over");
+        $("#level-title").text("Press Any Key to Restart");
+        startOver();
+    }, 2000);
+    $("#level-title").text("Oops! Game Over");
+    $(".container").hide();
+  
 }
 
 // Check answer and call for a new round or endgame condition
@@ -109,6 +140,17 @@ $(".btn").click(function(){
 // Start the game
 $(document).keypress(function(){
     if(!started && !isPaused){
+    var userChosenColour = $(this).attr("id");
+    userClickedPattern.push(userChosenColour);
+    animatePress(userChosenColour);
+    playSound(userChosenColour);
+    checkAnswer(userClickedPattern.length - 1);
+}
+);
+
+// Start the game
+$(document).keypress(function(){
+    if(!started){
         $(".container").show();
         started = true;
         nextSequence();
