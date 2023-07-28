@@ -7,16 +7,7 @@ var gamePattern = [];
 var userClickedPattern = [];
 // Pauses the ability to restart and click buttons
 var isPaused = false;
-// Default => normal difficulty
-var difficultyHard = false;
 // Hides Simon Color Buttons
-$(".container").hide();
-
-// Swaps colors of the grid each round
-function swapColors(){
-    
-}
-
 $(".container").hide();
 
 // Next sequence function
@@ -50,25 +41,6 @@ function showPattern(){
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
     audio.volume = 0.5;
-    showPattern();
-}
-
-// Renders gamePattern from start to finish each round
-function showPattern(){
-    var i = 0;
-    var interval = setInterval(function(){
-        if(!started) clearInterval(interval); 
-        $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
-        playSound(gamePattern[i]);
-        i++; 
-        if(i == gamePattern.length) clearInterval(interval);
-   }, 500)
-}
-
-// Play sound function
-function playSound(name){
-    var audio = new Audio("sounds/"+name+".mp3");
-    audio.volume = 0.5; // UPDATE 1.1 - less annoying
     if(name === "wrong") audio.volume = 0.3;
     audio.play();
 }
@@ -140,17 +112,6 @@ $(".btn").click(function(){
 // Start the game
 $(document).keypress(function(){
     if(!started && !isPaused){
-    var userChosenColour = $(this).attr("id");
-    userClickedPattern.push(userChosenColour);
-    animatePress(userChosenColour);
-    playSound(userChosenColour);
-    checkAnswer(userClickedPattern.length - 1);
-}
-);
-
-// Start the game
-$(document).keypress(function(){
-    if(!started){
         $(".container").show();
         started = true;
         nextSequence();
