@@ -7,8 +7,9 @@ var gamePattern = [];
 var userClickedPattern = [];
 // Pauses the ability to restart and click buttons
 var isPaused = false;
-// Hides Simon Color Buttons
-$(".container").hide();
+// Music state
+var isMusicPlaying = false;
+var music = new Audio("sounds/bgmusic.mp3");
 
 // Next sequence function
 function nextSequence(){
@@ -35,6 +36,19 @@ function showPattern(){
         playSound(gamePattern[i]);
         i++; 
    }, 500)
+}
+
+// Function that controls the background music
+function playMusic(){
+    isMusicPlaying = !isMusicPlaying;
+    if(isMusicPlaying){ 
+        music.play();
+        $("#music_img").attr("src","assets/music.png"); 
+    } 
+    else{ 
+        music.pause();
+        $("#music_img").attr("src","assets/music-mute.png"); 
+    }
 }
 
 // Play sound function
@@ -114,6 +128,7 @@ $(document).keypress(function(){
     if(!started && !isPaused){
         $(".container").show();
         started = true;
+        music.play();
         nextSequence();
     }
 });

@@ -11,7 +11,7 @@ body {
 }
 
 .container {
-  display: block;
+  display: none;
   width: 50%;
   margin: auto;
 
@@ -45,4 +45,13 @@ body {
 .pressed {
   box-shadow: 0 0 20px white;
   background-color: grey;
+}
+
+.music {
+  border: 2px solid white;
+  border-radius: 15%;
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  cursor: pointer;
 }
