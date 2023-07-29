@@ -9,25 +9,50 @@
 </head>
 
 <body>
-  <h1 id="level-title">Press A Key to Start</h1>
+  <h1 id="level-title">Welcome To The Simon Game</h1>
+  <h1 id="highscore"></h1>
+  <div class = "menu">
+    <button class = "btn" onclick="startGame()">
+      Start Game
+    </button>
+    <button class = "btn">
+      Change Difficulty [WIP]
+    </button>
+    <button class = "btn">
+      Leaderboard [WIP]
+    </button>
+  </div>
+
+
+  <div class = "menu-gameover">
+    <button class = "btn" onclick="startGame()">
+      Try Again
+    </button>
+    <button class = "btn">
+      Save Score [WIP]
+    </button>
+    <button class = "btn" onclick="openMenu()">
+      Menu
+    </button>
+  </div>
   <div class="container">
     <div lass="row">
 
-      <div type="button" id="green" class="btn green">
+      <div type="button" id="green" class="game-btn green">
 
       </div>
 
-      <div type="button" id="red" class="btn red">
+      <div type="button" id="red" class="game-btn red">
 
       </div>
     </div>
 
     <div class="row">
 
-      <div type="button" id="yellow" class="btn yellow">
+      <div type="button" id="yellow" class="game-btn yellow">
 
       </div>
-      <div type="button" id="blue" class="btn blue">
+      <div type="button" id="blue" class="game-btn blue">
 
       </div>
 

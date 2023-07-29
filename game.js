@@ -1,4 +1,5 @@
-var level = 0, started = false;
+var level = 0;
+var highscore = 1;
 // Array of button colours
 var buttonColours = ["red", "blue", "green", "yellow"];
 // Array of game pattern
@@ -10,6 +11,7 @@ var isPaused = false;
 // Music state
 var isMusicPlaying = false;
 var music = new Audio("sounds/bgmusic.mp3");
+
 
 // Next sequence function
 function nextSequence(){
@@ -70,26 +72,20 @@ function animatePress(currentColour){
 // Game over function
 function gameOver(){
     playSound("wrong");
-    $("body").css("background-color", "red");
+    $("body").css("background-color", "#C00000");
     isPaused = true;
-    startOver();
-    $("#level-title").text("Oops! Game Over");
+    if(level > highscore){
+        highscore = level;
+    }
+    $("#level-title").text("Oops! Game Over, You've Reached Level " + level);
     $(".container").hide();
     setTimeout(function(){
         $("body").css("background-color", "#011F3F");
-        $("#level-title").text("Press Any Key to Restart");
+        $("#level-title").text("Try Again?");
+        $("#highscore").text("Current Highscore: " + highscore);
+        $('.menu-gameover').show();
         isPaused = false;
-    }, 2000);
-
-  $("body").addClass("game-over");
-    setTimeout(function(){
-        $("body").removeClass("game-over");
-        $("#level-title").text("Press Any Key to Restart");
-        startOver();
-    }, 2000);
-    $("#level-title").text("Oops! Game Over");
-    $(".container").hide();
-  
+    }, 3000);  
 }
 
 // Check answer and call for a new round or endgame condition
@@ -100,21 +96,13 @@ function checkAnswer(currentLevel){
             userClickedPattern = [];
         }
     }
-    else if(started){ 
+    else{ 
             gameOver();
     }
 }
 
-// Start over function
-function startOver(){
-    level = 0;
-    gamePattern = [];
-    userClickedPattern = [];
-    started = false;
-}
-
 // Click event listener
-$(".btn").click(function(){
+$(".game-btn").click(function(){
     if(!isPaused){
        var userChosenColour = $(this).attr("id");
        userClickedPattern.push(userChosenColour);
@@ -124,11 +112,24 @@ $(".btn").click(function(){
 }});
 
 // Start the game
-$(document).keypress(function(){
-    if(!started && !isPaused){
+function startGame(){
+    if(!isPaused){
+        level = 0;
+        gamePattern = [];
+        userClickedPattern = [];
         $(".container").show();
-        started = true;
-        music.play();
+        $(".menu").hide();
+        $(".menu-gameover").hide();
+        $("#highscore").text("");
+        if(!isMusicPlaying) { 
+            playMusic(); 
+        }
         nextSequence();
     }
-});
+};
+
+function openMenu(){
+    $(".menu-gameover").hide();
+    $(".menu").show();
+    $("#level-title").text("Welcome To The Simon Game");
+}

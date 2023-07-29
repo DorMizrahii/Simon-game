@@ -3,21 +3,52 @@ body {
   background-color: #011122;
 }
 
-#level-title {
+h1 {
   font-family: 'Press Start 2P', cursive;
   font-size: 3rem;
   margin:  5%;
   color: #FEF2BF;
+  line-height: 1.6;
 }
 
 .container {
   display: none;
   width: 50%;
   margin: auto;
+}
 
+.menu{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.menu-gameover{
+  display: none;
 }
 
 .btn {
+  background-color: #FEF2BF;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: rgb(35, 35, 50);
+  cursor: pointer;
+  display: inline-block;
+  font-family: 'Press Start 2P', cursive;
+  font-size: 24px;
+  vertical-align: middle;
+  transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+  padding: 18px;
+  margin: 24px;
+  max-width: fit-content;
+}
+.btn:hover {
+  background-color: #F3F4F6;
+  text-decoration: none;
+  transition-duration: 0.1s;
+}
+
+.game-btn {
   margin: 25px;
   display: inline-block;
   height: 200px;
