@@ -11,13 +11,46 @@ var isPaused = false;
 // Music state
 var isMusicPlaying = false;
 var music = new Audio("sounds/bgmusic.mp3");
+// Game difficulty, default false for normal, true for hard
+var difficultyHard = false;
 
+// Returns a random from 0 to num - 1
+function getRandom(num){
+    return Math.floor(Math.random() * num);
+}
+
+// Shuffles array randomly based on Fisher-Yates shuffling algorithm
+function shuffle(){
+    $(".container").each(function(){
+        var btns = $(this).find('.game-btn');
+        console.log(btns);
+        let currentIndex = btns.length;
+        let randomIndex;
+        while(currentIndex != 0){
+            randomIndex = getRandom(currentIndex);
+            currentIndex--;
+            swapElements(btns[currentIndex], btns[randomIndex]);
+        } return btns;
+    });                    
+}
+
+// Function that swaps between two element divs
+function swapElements(obj1, obj2) {
+    // create marker element and insert it where obj1 is
+    var temp = document.createElement("div");
+    obj1.parentNode.insertBefore(temp, obj1);
+    // move obj1 to right before obj2
+    obj2.parentNode.insertBefore(obj1, obj2);
+    // move obj2 to right before where obj1 used to be
+    temp.parentNode.insertBefore(obj2, temp);
+    // remove temporary marker node
+    temp.parentNode.removeChild(temp);
+}
 
 // Next sequence function
 function nextSequence(){
     level++;
-    var randomNumber = Math.floor(Math.random()*4);
-    var randomChosenColour = buttonColours[randomNumber];
+    var randomChosenColour = buttonColours[getRandom(4)];
     gamePattern.push(randomChosenColour);
     $("#level-title").text("Level " + level);
     showPattern();
@@ -27,12 +60,15 @@ function nextSequence(){
 function showPattern(){
     var i = 0;
     isPaused = true;
-    $("body").css("background-color", "#011122");
+    $("body").css("background-color", "#000021");
     var interval = setInterval(function(){
         if(i == gamePattern.length) {
             isPaused = false;
             clearInterval(interval);
-            $("body").css("background-color", "#011F3F");
+            $("body").css("background-color", "#031138");
+            if(difficultyHard){
+                shuffle();
+            }
         }
         $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
         playSound(gamePattern[i]);
@@ -72,20 +108,20 @@ function animatePress(currentColour){
 // Game over function
 function gameOver(){
     playSound("wrong");
-    $("body").css("background-color", "#C00000");
+    $("body").css("background-color", "#4D0B08");
     isPaused = true;
     if(level > highscore){
         highscore = level;
     }
-    $("#level-title").text("Oops! Game Over, You've Reached Level " + level);
+    $("#level-title").text("Oops! Game Over");
     $(".container").hide();
     setTimeout(function(){
-        $("body").css("background-color", "#011F3F");
+        $("body").css("background-color", "#000021");
         $("#level-title").text("Try Again?");
         $("#highscore").text("Current Highscore: " + highscore);
-        $('.menu-gameover').show();
+        $('.menu-gameover').css("display", "flex");
         isPaused = false;
-    }, 3000);  
+    }, 2000);  
 }
 
 // Check answer and call for a new round or endgame condition
@@ -132,4 +168,9 @@ function openMenu(){
     $(".menu-gameover").hide();
     $(".menu").show();
     $("#level-title").text("Welcome To The Simon Game");
+}
+
+function changeDifficulty(){
+    difficultyHard = !difficultyHard;
+    difficultyHard ? $(".dot").animate({left: '+=400px'}) : $(".dot").animate({left: '-=400px'});
 }

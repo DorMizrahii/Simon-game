@@ -11,53 +11,48 @@
 <body>
   <h1 id="level-title">Welcome To The Simon Game</h1>
   <h1 id="highscore"></h1>
+
   <div class = "menu">
     <button class = "btn" onclick="startGame()">
       Start Game
     </button>
     <button class = "btn">
-      Change Difficulty [WIP]
+      Leaderboard WIP
     </button>
-    <button class = "btn">
-      Leaderboard [WIP]
+    <button class = "btn" onclick="changeDifficulty()">
+      Change Difficulty
     </button>
+    <div class="difficulty">
+      <p>Normal</p>
+      <p>Hard</p>
+    </div>
+    <div class="line">
+      <hr>
+      <div class="dot"></div>
+    </div>
   </div>
-
 
   <div class = "menu-gameover">
     <button class = "btn" onclick="startGame()">
       Try Again
     </button>
     <button class = "btn">
-      Save Score [WIP]
+      Save Score WIP
     </button>
     <button class = "btn" onclick="openMenu()">
       Menu
     </button>
   </div>
   <div class="container">
-    <div lass="row">
-
-      <div type="button" id="green" class="game-btn green">
-
-      </div>
-
-      <div type="button" id="red" class="game-btn red">
-
-      </div>
+    <div class="row">
+      <div type="button" id="green" class="game-btn green"></div>
+      <div type="button" id="red" class="game-btn red"></div>
     </div>
 
     <div class="row">
-
-      <div type="button" id="yellow" class="game-btn yellow">
-
-      </div>
-      <div type="button" id="blue" class="game-btn blue">
-
-      </div>
-
+      <div type="button" id="yellow" class="game-btn yellow"></div>
+      <div type="button" id="blue" class="game-btn blue"></div>
     </div>
-
   </div>
 <div type="button" class="music">
   <img 
@@ -68,6 +63,7 @@
   onclick = "playMusic()"
   >
 </div>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="game.js"></script>
 </body>
