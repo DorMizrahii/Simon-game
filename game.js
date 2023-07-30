@@ -1,5 +1,6 @@
 var level = 0;
-var highscore = 1;
+var highscoreNormal = 1;
+var highscoreHard = 1;
 // Array of button colours
 var buttonColours = ["red", "blue", "green", "yellow"];
 // Array of game pattern
@@ -10,6 +11,7 @@ var userClickedPattern = [];
 var isPaused = false;
 // Music state
 var isMusicPlaying = false;
+var mute = false;
 var music = new Audio("sounds/bgmusic.mp3");
 // Game difficulty, default false for normal, true for hard
 var difficultyHard = false;
@@ -60,12 +62,12 @@ function nextSequence(){
 function showPattern(){
     var i = 0;
     isPaused = true;
-    $("body").css("background-color", "#000021");
+    $("body").css("background-color", "var(--bg-color)");
     var interval = setInterval(function(){
         if(i == gamePattern.length) {
             isPaused = false;
             clearInterval(interval);
-            $("body").css("background-color", "#031138");
+            $("body").css("background-color", "var(--bg-highlight)");
             if(difficultyHard){
                 shuffle();
             }
@@ -79,13 +81,15 @@ function showPattern(){
 // Function that controls the background music
 function playMusic(){
     isMusicPlaying = !isMusicPlaying;
-    if(isMusicPlaying){ 
+    if(isMusicPlaying){
         music.play();
-        $("#music_img").attr("src","assets/music.png"); 
+        $("#music_img").attr("src","assets/music.png");
+        mute = false;
     } 
     else{ 
         music.pause();
         $("#music_img").attr("src","assets/music-mute.png"); 
+        mute = true;
     }
 }
 
@@ -108,17 +112,14 @@ function animatePress(currentColour){
 // Game over function
 function gameOver(){
     playSound("wrong");
-    $("body").css("background-color", "#4D0B08");
+    $("body").css("background-color", "var(--gameover-color)");
     isPaused = true;
-    if(level > highscore){
-        highscore = level;
-    }
+    saveScore(); 
     $("#level-title").text("Oops! Game Over");
     $(".container").hide();
     setTimeout(function(){
-        $("body").css("background-color", "#000021");
+        $("body").css("background-color", "var(--bg-color)"); 
         $("#level-title").text("Try Again?");
-        $("#highscore").text("Current Highscore: " + highscore);
         $('.menu-gameover').css("display", "flex");
         isPaused = false;
     }, 2000);  
@@ -156,21 +157,44 @@ function startGame(){
         $(".container").show();
         $(".menu").hide();
         $(".menu-gameover").hide();
-        $("#highscore").text("");
-        if(!isMusicPlaying) { 
+        if(!isMusicPlaying && !mute) { 
             playMusic(); 
         }
         nextSequence();
     }
 };
 
+// Opens Main Menu
 function openMenu(){
     $(".menu-gameover").hide();
+    $(".highscore-table").hide();
     $(".menu").show();
     $("#level-title").text("Welcome To The Simon Game");
 }
 
+// Changes difficulty and animates the UI
 function changeDifficulty(){
     difficultyHard = !difficultyHard;
     difficultyHard ? $(".dot").animate({left: '+=400px'}) : $(".dot").animate({left: '-=400px'});
+}
+
+// Opens personal highscores for both difficulties
+function openScoreTable(){
+    $("#level-title").text("Your Personal Highscores");
+    $(".normal-scoreText").text("Level " + localStorage.getItem("normal"));
+    $(".hard-scoreText").text("Level " + localStorage.getItem("hard"));
+    $(".highscore-table").css("display","flex");
+    $(".menu").hide();
+}
+
+// Every game over it compares personal highscores and saves it to local storage
+function saveScore(){
+    if(difficultyHard && highscoreHard < level){
+       localStorage.setItem("hard", level);
+       highscoreHard = level;
+    }
+    if(!difficultyHard && highscoreNormal < level){
+        localStorage.setItem("normal", level);
+        highscoreNormal = level;
+    }
 }
