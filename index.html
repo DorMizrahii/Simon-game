@@ -9,34 +9,65 @@
 </head>
 
 <body>
-  <h1 id="level-title">Press A Key to Start</h1>
+  <h1 id="level-title">Welcome To The Simon Game</h1>
+
+  <div class = "menu">
+    <button class = "btn" onclick="startGame()">
+      Start Game
+    </button>
+    <button class = "btn" onclick="openScoreTable()">
+      Highscores
+    </button>
+    <button class = "btn" onclick="changeDifficulty()">
+      Change Difficulty
+    </button>
+    <div class="difficulty">
+      <p>Normal</p>
+      <p>Hard</p>
+    </div>
+    <div class="line">
+      <hr>
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <div class="highscore-table">
+    <p>NORMAL:     <span class="normal-scoreText"></span></p>
+    <hr style="position: static;">
+    <p>HARD:      <span class="hard-scoreText"></span></p>
+    <button class="btn" onclick="openMenu()">Back</button>
+  </div> 
+
+  <div class = "menu-gameover">
+    <button class = "btn" onclick="startGame()">
+      Try Again
+    </button>
+    <button class = "btn" onclick="openMenu()">
+      Menu
+    </button>
+  </div>
   <div class="container">
-    <div lass="row">
-
-      <div type="button" id="green" class="btn green">
-
-      </div>
-
-      <div type="button" id="red" class="btn red">
-
-      </div>
+    <div class="row">
+      <div type="button" id="green" class="game-btn green"></div>
+      <div type="button" id="red" class="game-btn red"></div>
     </div>
 
     <div class="row">
-
-      <div type="button" id="yellow" class="btn yellow">
-
-      </div>
-      <div type="button" id="blue" class="btn blue">
-
-      </div>
-
+      <div type="button" id="yellow" class="game-btn yellow"></div>
+      <div type="button" id="blue" class="game-btn blue"></div>
     </div>
-
   </div>
+<div type="button" class="music">
+  <img 
+  id = "music_img"
+  src = "assets/music-mute.png" 
+  width = "50px" 
+  height = "50px"
+  onclick = "playMusic()"
+  >
+</div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script src="game.js"></script>
 </body>
-
 </html>

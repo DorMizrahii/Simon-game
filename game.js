@@ -1,4 +1,6 @@
-var level = 0, started = false;
+var level = 0;
+var highscoreNormal = 1;
+var highscoreHard = 1;
 // Array of button colours
 var buttonColours = ["red", "blue", "green", "yellow"];
 // Array of game pattern
@@ -7,14 +9,50 @@ var gamePattern = [];
 var userClickedPattern = [];
 // Pauses the ability to restart and click buttons
 var isPaused = false;
-// Hides Simon Color Buttons
-$(".container").hide();
+// Music state
+var isMusicPlaying = false;
+var mute = false;
+var music = new Audio("sounds/bgmusic.mp3");
+// Game difficulty, default false for normal, true for hard
+var difficultyHard = false;
+
+// Returns a random from 0 to num - 1
+function getRandom(num){
+    return Math.floor(Math.random() * num);
+}
+
+// Shuffles array randomly based on Fisher-Yates shuffling algorithm
+function shuffle(){
+    $(".container").each(function(){
+        var btns = $(this).find('.game-btn');
+        console.log(btns);
+        let currentIndex = btns.length;
+        let randomIndex;
+        while(currentIndex != 0){
+            randomIndex = getRandom(currentIndex);
+            currentIndex--;
+            swapElements(btns[currentIndex], btns[randomIndex]);
+        } return btns;
+    });                    
+}
+
+// Function that swaps between two element divs
+function swapElements(obj1, obj2) {
+    // create marker element and insert it where obj1 is
+    var temp = document.createElement("div");
+    obj1.parentNode.insertBefore(temp, obj1);
+    // move obj1 to right before obj2
+    obj2.parentNode.insertBefore(obj1, obj2);
+    // move obj2 to right before where obj1 used to be
+    temp.parentNode.insertBefore(obj2, temp);
+    // remove temporary marker node
+    temp.parentNode.removeChild(temp);
+}
 
 // Next sequence function
 function nextSequence(){
     level++;
-    var randomNumber = Math.floor(Math.random()*4);
-    var randomChosenColour = buttonColours[randomNumber];
+    var randomChosenColour = buttonColours[getRandom(4)];
     gamePattern.push(randomChosenColour);
     $("#level-title").text("Level " + level);
     showPattern();
@@ -24,17 +62,35 @@ function nextSequence(){
 function showPattern(){
     var i = 0;
     isPaused = true;
-    $("body").css("background-color", "#011122");
+    $("body").css("background-color", "var(--bg-color)");
     var interval = setInterval(function(){
         if(i == gamePattern.length) {
             isPaused = false;
             clearInterval(interval);
-            $("body").css("background-color", "#011F3F");
+            $("body").css("background-color", "var(--bg-highlight)");
+            if(difficultyHard){
+                shuffle();
+            }
         }
         $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
         playSound(gamePattern[i]);
         i++; 
    }, 500)
+}
+
+// Function that controls the background music
+function playMusic(){
+    isMusicPlaying = !isMusicPlaying;
+    if(isMusicPlaying){
+        music.play();
+        $("#music_img").attr("src","assets/music.png");
+        mute = false;
+    } 
+    else{ 
+        music.pause();
+        $("#music_img").attr("src","assets/music-mute.png"); 
+        mute = true;
+    }
 }
 
 // Play sound function
@@ -56,26 +112,17 @@ function animatePress(currentColour){
 // Game over function
 function gameOver(){
     playSound("wrong");
-    $("body").css("background-color", "red");
+    $("body").css("background-color", "var(--gameover-color)");
     isPaused = true;
-    startOver();
+    saveScore(); 
     $("#level-title").text("Oops! Game Over");
     $(".container").hide();
     setTimeout(function(){
-        $("body").css("background-color", "#011F3F");
-        $("#level-title").text("Press Any Key to Restart");
+        $("body").css("background-color", "var(--bg-color)"); 
+        $("#level-title").text("Try Again?");
+        $('.menu-gameover').css("display", "flex");
         isPaused = false;
-    }, 2000);
-
-  $("body").addClass("game-over");
-    setTimeout(function(){
-        $("body").removeClass("game-over");
-        $("#level-title").text("Press Any Key to Restart");
-        startOver();
-    }, 2000);
-    $("#level-title").text("Oops! Game Over");
-    $(".container").hide();
-  
+    }, 2000);  
 }
 
 // Check answer and call for a new round or endgame condition
@@ -86,21 +133,13 @@ function checkAnswer(currentLevel){
             userClickedPattern = [];
         }
     }
-    else if(started){ 
+    else{ 
             gameOver();
     }
 }
 
-// Start over function
-function startOver(){
-    level = 0;
-    gamePattern = [];
-    userClickedPattern = [];
-    started = false;
-}
-
 // Click event listener
-$(".btn").click(function(){
+$(".game-btn").click(function(){
     if(!isPaused){
        var userChosenColour = $(this).attr("id");
        userClickedPattern.push(userChosenColour);
@@ -110,10 +149,52 @@ $(".btn").click(function(){
 }});
 
 // Start the game
-$(document).keypress(function(){
-    if(!started && !isPaused){
+function startGame(){
+    if(!isPaused){
+        level = 0;
+        gamePattern = [];
+        userClickedPattern = [];
         $(".container").show();
-        started = true;
+        $(".menu").hide();
+        $(".menu-gameover").hide();
+        if(!isMusicPlaying && !mute) { 
+            playMusic(); 
+        }
         nextSequence();
     }
-});
+};
+
+// Opens Main Menu
+function openMenu(){
+    $(".menu-gameover").hide();
+    $(".highscore-table").hide();
+    $(".menu").show();
+    $("#level-title").text("Welcome To The Simon Game");
+}
+
+// Changes difficulty and animates the UI
+function changeDifficulty(){
+    difficultyHard = !difficultyHard;
+    difficultyHard ? $(".dot").animate({left: '+=400px'}) : $(".dot").animate({left: '-=400px'});
+}
+
+// Opens personal highscores for both difficulties
+function openScoreTable(){
+    $("#level-title").text("Your Personal Highscores");
+    $(".normal-scoreText").text("Level " + localStorage.getItem("normal"));
+    $(".hard-scoreText").text("Level " + localStorage.getItem("hard"));
+    $(".highscore-table").css("display","flex");
+    $(".menu").hide();
+}
+
+// Every game over it compares personal highscores and saves it to local storage
+function saveScore(){
+    if(difficultyHard && highscoreHard < level){
+       localStorage.setItem("hard", level);
+       highscoreHard = level;
+    }
+    if(!difficultyHard && highscoreNormal < level){
+        localStorage.setItem("normal", level);
+        highscoreNormal = level;
+    }
+}
