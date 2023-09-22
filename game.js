@@ -96,7 +96,7 @@ function playMusic(){
 // Play sound function
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
-    audio.volume = 0.5;
+    audio.volume = 0.4;
     if(name === "wrong") audio.volume = 0.3;
     audio.play();
 }
