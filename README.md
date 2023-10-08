@@ -14,8 +14,13 @@ A popular classic game that tests your memory with 4 colors (usually RGBY) that 
 <img src="https://github.com/ItsAlexanderPopov/Simon-game/assets/87665762/05fbc3af-74e0-49fa-b73b-a646263d7f81" alt="Gameplay" width="300" height="300"/>
 <img src="https://github.com/ItsAlexanderPopov/Simon-game/assets/87665762/33ebd6b0-414b-40bb-b27c-c45d6be521de" alt="Scores" width="300" height="300"/>
 
-## Languages Used
-Jquery - Javascript - CSS - HTML
+## Technology Used
+<div>
+  <img src='https://img.shields.io/badge/jQuery-0769AD?style=for-the-badge&logo=jquery&logoColor=white' alt='JQUERY'/>
+  <img src='https://img.shields.io/badge/JavaScript-323330?style=for-the-badge&logo=javascript&logoColor=F7DF1E' alt='JavaScript'/>
+  <img src='https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white' alt='CSS3'/>
+  <img src='https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white' alt='HTML5'/>
+</div>
 
 ## Installation
 - Offline gameplay : download the code folder and open the html file in the project folder.
