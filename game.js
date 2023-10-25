@@ -1,6 +1,6 @@
 var level = 0;
-var highscoreNormal = 1;
-var highscoreHard = 1;
+var highscoreNormal = 0;
+var highscoreHard = 0;
 // Array of button colours
 var buttonColours = ["red", "blue", "green", "yellow"];
 // Array of game pattern
@@ -25,7 +25,6 @@ function getRandom(num){
 function shuffle(){
     $(".container").each(function(){
         var btns = $(this).find('.game-btn');
-        console.log(btns);
         let currentIndex = btns.length;
         let randomIndex;
         while(currentIndex != 0){
@@ -73,8 +72,10 @@ function showPattern(){
             }
         }
         $("#"+gamePattern[i]).fadeOut(100).fadeIn(100);
-        playSound(gamePattern[i]);
-        i++; 
+        if(isPaused){
+            playSound(gamePattern[i]);
+            i++; 
+        }
    }, 500)
 }
 
@@ -82,6 +83,7 @@ function showPattern(){
 function playMusic(){
     isMusicPlaying = !isMusicPlaying;
     if(isMusicPlaying){
+        music.volume = 0.1;
         music.play();
         $("#music_img").attr("src","assets/music.png");
         mute = false;
@@ -96,8 +98,7 @@ function playMusic(){
 // Play sound function
 function playSound(name){
     var audio = new Audio("sounds/"+name+".mp3");
-    audio.volume = 0.4;
-    if(name === "wrong") audio.volume = 0.3;
+    audio.volume = 0.1;
     audio.play();
 }
 
@@ -181,8 +182,16 @@ function changeDifficulty(){
 // Opens personal highscores for both difficulties
 function openScoreTable(){
     $("#level-title").text("Your Personal Highscores");
-    $(".normal-scoreText").text("Level " + localStorage.getItem("normal"));
-    $(".hard-scoreText").text("Level " + localStorage.getItem("hard"));
+    if(localStorage.getItem("normal") == null){
+        $(".normal-scoreText").text("Not Played Yet");
+    }else{
+        $(".normal-scoreText").text("Level " + localStorage.getItem("normal"));
+    }
+    if(localStorage.getItem("hard") == null){
+        $(".hard-scoreText").text("Not Played Yet");
+    }else{
+        $(".hard-scoreText").text("Level " + localStorage.getItem("hard"));
+    }
     $(".highscore-table").css("display","flex");
     $(".menu").hide();
 }
