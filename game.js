@@ -25,7 +25,6 @@ function getRandom(num){
 function shuffle(){
     $(".container").each(function(){
         var btns = $(this).find('.game-btn');
-        console.log(btns);
         let currentIndex = btns.length;
         let randomIndex;
         while(currentIndex != 0){
@@ -98,7 +97,6 @@ function playMusic(){
 
 // Play sound function
 function playSound(name){
-    console.log(name);
     var audio = new Audio("sounds/"+name+".mp3");
     audio.volume = 0.1;
     audio.play();
